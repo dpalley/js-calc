@@ -5,13 +5,14 @@
 }
 
 .calculator {
-  background-color: burlywood;
+  background-color: #eee;
   height: 500px;
   width: 300px;
-  border: 2px solid black;
+  border: 10px solid #888;
   border-radius: 10px;
   margin: 10px auto; 
   padding: 15px;
+  position: relative;
 }
 
 h1 {  
@@ -19,9 +20,19 @@ h1 {
   text-align:center; 
   font-size: 1.0em; 
   display: block; 
+  margin: 5px auto;
+}
+h3 {  
+  font-family: "Digital-7 (mono)",  "Orbitron", sans-serif; 
+  text-align:center; 
+  font-size: 0.8em; 
+  display: block; 
+  margin: 5px auto;
+  display: none;
 }
 
-.display {
+
+#display {
   background-color: azure;
   height: 50px;
   width: 230px;
@@ -31,30 +42,46 @@ h1 {
   padding: 15px;
 }
 
+#value {
+  float: right;
+  font-size: 1.7em;
+  font-weight: 600;
+  font-family: "Armata", "Arial", sans-serif;
+  margin-top: .4em;
+}
+
 .calc-row {
-  
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+}
+
+.hide-row {
+  display: none;
 }
 .calc-btn {
   height: 20px;
   width: 25px;
   border: 1px solid black;
   border-radius: 5px;
-  margin: 7px; 
+  margin: 10px; 
   padding: 5px;
   display: inline-block;
   font-family: "Arial", sans-serif; 
   cursor: pointer;
 }
 .btn-shadow { box-shadow: 2px 2px; }
-.calc-btn p { margin: auto; }
+
+.calc-btn p { margin: auto; color: #fff; }
 .blu-btn {
-  background-color: lightblue;
+  background-color: royalblue;
 }
 .red-btn {
 	background-color: #d55;
 }
 .gra-btn {
-	background-color: #ddd;
+	background-color: #444;
 }
 .blu-btn:hover {
   background-color: #cDf8ff;
@@ -63,40 +90,39 @@ h1 {
   background-color: #f00;
 }
 .gra-btn:hover {
-  background-color: #f4f4f4;
+  background-color: #666;
 }
 a { color: royalblue; text-decoration: none; text-align: center; }
 
 a:visited, a:active, a:hover, a:focus { text-decoration: none; }
 
-.footer p.copy { font-family: "Arial", sans-serif;}
-.footer a:hover { font-style: italic; }
-
-.copy { font-size: 1.4em; font-weight: 800; }
-
-/*@media screen and (max-width: 740px) { .panel { width: 100%; }};*/
-
-
-
-
- 
-/* sticky-footer without declaring footer as position:fixed */
-/* http://mystrd.at/modern-clean-css-sticky-footer/ */
-html {
-  position: relative;        /*****************************/
-  min-height: 100%;          /*****************************/
+.foot { 
+  font-size: 1.2em;
+  font-weight: 600;
+    position: absolute; 
+/*  margin: .5em auto;*/
+  right:auto;
+/*  left: auto;*/
+  bottom: .5em;
+  height: 40px;
+  border: 0 auto;
+  width: 80%;
 }
-body {
-  margin: 0 0 40px;          /*** bottom margin = footer height ***/
-  padding-bottom: 10px;
-}
-footer {
-  text-align: center; 
-  position: absolute;        /*****************************/
-  margin: 0 auto;
-  left: 0;
-  bottom: 0;
-  height: 40px;              /*** height = bottom margin of body ***/
+.foot p { font-family: "Arial", sans-serif; text-align: center; }
+.foot a:hover { font-style: italic; }
+
+/*.copy { font-size: 1.4em; font-weight: 800; }*/
+
+@media screen and (max-width: 320px) {
+.calculator {
   width: 100%;
-  border: 0;
 }
+  
+  #value {
+    float: right;
+    font-size: 1.4em;
+    font-weight: 600;
+    font-family: "Armata", "Arial", sans-serif;
+    margin-top: .4em;
+  }
+};
