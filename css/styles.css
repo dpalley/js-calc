@@ -1,0 +1,102 @@
+@font-face {
+  font-family: digital-7;
+  src: local("Digital-7"),
+  url(./assets/digital-7.ttf);
+}
+
+.calculator {
+  background-color: burlywood;
+  height: 500px;
+  width: 300px;
+  border: 2px solid black;
+  border-radius: 10px;
+  margin: 10px auto; 
+  padding: 15px;
+}
+
+h1 {  
+  font-family: "Digital-7 (mono)",  "Orbitron", sans-serif; 
+  text-align:center; 
+  font-size: 1.0em; 
+  display: block; 
+}
+
+.display {
+  background-color: azure;
+  height: 50px;
+  width: 230px;
+  border: 2px solid black;
+  border-radius: 2px;
+  margin: 10px auto; 
+  padding: 15px;
+}
+
+.calc-row {
+  
+}
+.calc-btn {
+  height: 20px;
+  width: 25px;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 7px; 
+  padding: 5px;
+  display: inline-block;
+  font-family: "Arial", sans-serif; 
+  cursor: pointer;
+}
+.btn-shadow { box-shadow: 2px 2px; }
+.calc-btn p { margin: auto; }
+.blu-btn {
+  background-color: lightblue;
+}
+.red-btn {
+	background-color: #d55;
+}
+.gra-btn {
+	background-color: #ddd;
+}
+.blu-btn:hover {
+  background-color: #cDf8ff;
+}
+.red-btn:hover {
+  background-color: #f00;
+}
+.gra-btn:hover {
+  background-color: #f4f4f4;
+}
+a { color: royalblue; text-decoration: none; text-align: center; }
+
+a:visited, a:active, a:hover, a:focus { text-decoration: none; }
+
+.footer p.copy { font-family: "Arial", sans-serif;}
+.footer a:hover { font-style: italic; }
+
+.copy { font-size: 1.4em; font-weight: 800; }
+
+/*@media screen and (max-width: 740px) { .panel { width: 100%; }};*/
+
+
+
+
+ 
+/* sticky-footer without declaring footer as position:fixed */
+/* http://mystrd.at/modern-clean-css-sticky-footer/ */
+html {
+  position: relative;        /*****************************/
+  min-height: 100%;          /*****************************/
+}
+body {
+  margin: 0 0 40px;          /*** bottom margin = footer height ***/
+  padding-bottom: 10px;
+}
+footer {
+  text-align: center; 
+  position: absolute;        /*****************************/
+  margin: 0 auto;
+  left: 0;
+  bottom: 0;
+  height: 40px;              /*** height = bottom margin of body ***/
+  width: 100%;
+  border: 0;
+}
