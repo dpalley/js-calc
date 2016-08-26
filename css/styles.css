@@ -3,6 +3,11 @@
   src: local("Digital-7"),
   url(./assets/digital-7.ttf);
 }
+@font-face {
+  font-family: "Crystal";
+  src: url(../assets/Crysta.ttf) format("truetype");
+}
+h1 { font-family: "Kimberley", sans-serif }
 
 .calculator {
   background-color: #eee;
@@ -16,7 +21,7 @@
 }
 
 h1 {  
-  font-family: "Digital-7 (mono)",  "Orbitron", sans-serif; 
+  font-family: "Crystal", "Digital-7 (mono)",  "Orbitron", sans-serif; 
   text-align:center; 
   font-size: 1.0em; 
   display: block; 
@@ -31,6 +36,11 @@ h3 {
   display: none;
 }
 
+.off-message {
+  font-size: 1.4em;
+  margin-top: 200px;
+}
+
 
 #display {
   background-color: azure;
@@ -40,13 +50,14 @@ h3 {
   border-radius: 2px;
   margin: 10px auto; 
   padding: 15px;
+  overflow: hidden;
 }
 
 #value {
   float: right;
-  font-size: 1.7em;
-  font-weight: 600;
-  font-family: "Armata", "Arial", sans-serif;
+  font-size: 1.9em;
+  font-weight: 500;
+  font-family: 'Segment7Standard', "Armata", "Arial", sans-serif;
   margin-top: .4em;
 }
 
@@ -72,25 +83,33 @@ h3 {
   cursor: pointer;
 }
 .btn-shadow { box-shadow: 2px 2px; }
+.btn-press { transform:translate(2px,2px); }
 
 .calc-btn p { margin: auto; color: #fff; }
-.blu-btn {
+
+.operator {
   background-color: royalblue;
 }
-.red-btn {
-	background-color: #d55;
+.control {
+  background-color: #c33;
 }
-.gra-btn {
-	background-color: #444;
+.value {
+  background-color: #444;
 }
-.blu-btn:hover {
-  background-color: #cDf8ff;
+.memory {
+  background-color: green;
 }
-.red-btn:hover {
+.operator:hover {
+  background-color: #6D98ef;
+}
+.control:hover {
   background-color: #f00;
 }
-.gra-btn:hover {
-  background-color: #666;
+.value:hover {
+  background-color: #777;
+}
+.memory:hover {
+  background-color: #4a4;
 }
 a { color: royalblue; text-decoration: none; text-align: center; }
 
