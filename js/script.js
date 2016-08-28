@@ -3,15 +3,16 @@ $( document ).ready(function() {
   // Variable declarations---------------------------
   
   // Thought about having everything in a 'state' variable, but decided that all the dot notation would get really old really fast
-//  var data = {state: "init", number: "integer", pendingOp: false, integerVal: 0, accumulator: 0, memVal: 0 };
+//  var data = {state: "init", number: "integer", currentOp: false, integerVal: 0, accumulator: 0, memVal: 0 };
   
   // State variables
-//  var state       = "init";
   var number;        // "integer" and "float" - depends on value of 'accumulator'
-  var pendingOp;
+  var currentOp;
+  var pendingOp;     // when user enters 'a + b * c' add will be pendingOp and mult wil be currentOp
   var integerVal;    // integer portion of string that is displayed
   var fractionVal;   // fractional portion of string that is displayed
   var accumulator;   // value of accumulator
+  var pendingAdd;
   var register;
   var currentVal;    // numeric value being displayed
   var memVal;
@@ -27,12 +28,17 @@ $( document ).ready(function() {
     console.log("clickVal is " + clickVal+ ", accumulator is " + accumulator + ", number is " + number + ", integerVal is " + integerVal + ", fractionVal is " + fractionVal);
   }
   
-  function resetValues() {
-//    state       = "init";
+  function clearEntry() {
     number       = "zero";
-    pendingOp    = "none";
     integerVal   = "0";
     fractionVal  = ""; 
+    updateDisplay(currentVal);
+  }
+  function resetValues() {
+    clearEntry();
+    currentOp    = noOp;
+//    pendingOp    = "none";
+    pendingAdd   = false;
     accumulator  = 0;
     register     = 0;
     currentVal   = 0;
@@ -42,24 +48,23 @@ $( document ).ready(function() {
     updateDisplay();
   }
   
+  function noOp()       {return currentVal;}
   function addTwo(a, b) {return (a+b);}
   function subTwo(a, b) {return (a-b);}
   function divTwo(a, b) {return (a/b);}
   function mulTwo(a, b) {return (a*b);}
-
+  
+  
   // Contol keys - On, Off, Clear
   function isControl() {
     switch (clickVal) {
+    case "CE": clearEntry(); break;
     case "C": resetValues(); console.log("reset"); break;
     case "Off":
       $(".calculator").fadeOut(300);
       $(".off-message").delay(300).fadeIn(500).delay(1200).fadeOut(500);
       break;
-    case "CE": resetValues(); break;
-
-    default:
-      console.log("invalid control value");
-      break;   
+    default: console.log("invalid control value"); break;   
      }        
   }
   
@@ -76,13 +81,12 @@ showValues();
         if (clickVal === ".") number = "float";
         else {
           integerVal += clickVal;
-//          updateDisplay();
           }
           updateDisplay();
 
         break;
       case "zero":
-        integerVal = "0"; fractionVal = "";
+//        integerVal = "0"; fractionVal = "";        
         if (clickVal === ".") number = "float";
         else if (clickVal === "0") {
           console.log("entering 0 for a 0 value, dummy");
@@ -91,7 +95,6 @@ showValues();
         else {
           number = "integer";
           integerVal = clickVal;
-//          updateDisplay();
         }
         updateDisplay();
         break;
@@ -108,53 +111,65 @@ showValues();
     if (number === "float") currentVal = parseFloat(integerVal + "." + fractionVal);
     switch (clickVal) {       
       case "\u221a":                               // square root
-        accumulator = Math.sqrt(currentVal);
-        updateDisplay(accumulator);
+        currentVal = Math.sqrt(currentVal);
+        updateDisplay(currentVal);
         break;
       case "%":
-        accumulator = currentVal/100;
-        updateDisplay(accumulator);
+        currentVal = currentVal/100;
+        updateDisplay(currentVal);
         break;
-      case "\xf7":
-        pendingOp = divTwo;
-        op = "div";
-        register = accumulator;
-        accumulator = currentVal; 
-        break;                               // divide  "h\u016B"
-      case "\xd7":
-        pendingOp = mulTwo;
-        op = "mult";
-        register = accumulator;
-        accumulator = currentVal; 
+      case "\xf7":      // invert the next number and treat it as a multiplication
+
+        
+      case "\xd7":                             // multiply
+        switch(currentOp) {
+          case addTwo:
+console.log("test 1");
+            pendingAdd = true;
+            register = accumulator;
+            accumulator = currentVal;
+            break;
+          case mulTwo:
+console.log("test 2");
+            accumulator = currentOp(accumulator, currentVal);
+ 
+            updateDisplay(accumulator);
+            break;
+          default: 
+console.log("test 3");
+            accumulator = currentVal;
+            break;
+        }
+        currentOp = mulTwo;
         break;
-      case "-":
-        pendingOp = subTwo;
-        op = "sub";
-        pendingOp = "sub";
-        register = accumulator;
-        accumulator = currentVal;
-        pendingOp = true;
-        break;
+      case "-":     // invert the next number and treat it as addition
+ 
       case "+":
-        pendingOp = addTwo;
-        op = "add";
-        pendingOp = "add";
-        register = accumulator;
-        accumulator = currentVal;
-        pendingOp = true;
+        pendingOp = currentOp;
+        currentOp = addTwo;
+        if ((pendingAdd) || (pendingOp === mulTwo)) {                           // <-- not sure about this
+          accumulator = pendingOp(accumulator, currentVal);
+          updateDisplay(accumulator);
+        } else {
+          op = "add";
+          register = accumulator;
+          accumulator = currentVal;
+        }
         break;
       case "=":
   console.log(accumulator + " " + currentVal);
-        switch (op) {
-          case "add": accumulator += currentVal; break;
-          case "sub": accumulator -= currentVal; break;
-          case "mult": accumulator *= currentVal; break;
-          case "div": accumulator /= currentVal; break;
-        }
-        pendingOp = "none";
+        currentVal = currentOp(accumulator, currentVal);
+         if(pendingAdd && (currentOp === mulTwo)) {
+console.log("test 5");           
+              currentVal = addTwo(register,currentVal);
+              pendingAdd = false;
+              register = 0;
+            }
+
+        currentOp = noOp;
         register = 0;
-        updateDisplay(accumulator);
-        console.log(accumulator); 
+        updateDisplay(currentVal);
+        console.log(currentVal); 
         break;
       default:
         console.log("invalid operator");
@@ -211,10 +226,31 @@ showValues();
   resetValues();
   $("h1").hide().fadeIn(500);
   $(".off-message").hide();
-   //updateDisplay("0123456789");
-  
+  $(document).keypress(function(e) {
+    click.play();
+    switch (e.which) {
+      case 27:
+      case 32:
+      case 127: clickVal = "C";    isControl(); break;
+      case 13:
+      case 61: clickVal = "=";    isOperator(); break;
+      case 37: clickVal = "%";    isOperator(); break;
+      case 42:
+      case 88:
+      case 120: clickVal = "\xd7"; isOperator(); break;
+      case 43: clickVal = "+";    isOperator(); break;
+      case 47: clickVal = "\xf7"; isOperator(); break;
+      case 48: clickVal = "0"; isValue(); break;
+      case 49: clickVal = "1"; isValue(); break;
+      case 50: clickVal = "2"; isValue(); break;
+      case 51: clickVal = "3"; isValue(); break;
+      case 52: clickVal = "4"; isValue(); break;
+      case 53: clickVal = "5"; isValue(); break;
+      case 54: clickVal = "6"; isValue(); break;
+      case 55: clickVal = "7"; isValue(); break;
+      case 56: clickVal = "8"; isValue(); break;
+      case 57: clickVal = "9"; isValue(); break;
+      default:  break; // random keypress - don't care
+    }
+  });    
 });
-
-
-
-

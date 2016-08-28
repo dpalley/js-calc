@@ -1,13 +1,4 @@
-@font-face {
-  font-family: digital-7;
-  src: local("Digital-7"),
-  url(./assets/digital-7.ttf);
-}
-@font-face {
-  font-family: "Crystal";
-  src: url(../assets/Crysta.ttf) format("truetype");
-}
-h1 { font-family: "Kimberley", sans-serif }
+
 
 .calculator {
   background-color: #eee;
@@ -21,14 +12,15 @@ h1 { font-family: "Kimberley", sans-serif }
 }
 
 h1 {  
-  font-family: "Crystal", "Digital-7 (mono)",  "Orbitron", sans-serif; 
+  font-family: "Orbitron", sans-serif; 
   text-align:center; 
   font-size: 1.0em; 
   display: block; 
   margin: 5px auto;
+  letter-spacing: 0.05em;
 }
 h3 {  
-  font-family: "Digital-7 (mono)",  "Orbitron", sans-serif; 
+  font-family: "Orbitron", sans-serif; 
   text-align:center; 
   font-size: 0.8em; 
   display: block; 
@@ -68,6 +60,8 @@ h3 {
   justify-content: center;
 }
 
+.calc-btn a:visited { color: white; }
+
 .hide-row {
   display: none;
 }
@@ -77,12 +71,16 @@ h3 {
   border: 1px solid black;
   border-radius: 5px;
   margin: 10px; 
-  padding: 5px;
+  padding: 7px 5px 4px 5px;
+  text-align: center;
   display: inline-block;
   font-family: "Arial", sans-serif; 
   cursor: pointer;
 }
-.btn-shadow { box-shadow: 2px 2px; }
+.times { font-family: "Times New Roman", serif; }
+.btn-shadow { box-shadow: 3px 3px #222; }
+/*.btn-shadow { box-shadow: 2px -2px 2px rgba(34,34,34,0.6); }*/
+/*.btn-shadow {box-shadow: inset 0px 0px 20px 10px rgba(64,64,64,0.2);}*/
 .btn-press { transform:translate(2px,2px); }
 
 .calc-btn p { margin: auto; color: #fff; }
@@ -94,7 +92,7 @@ h3 {
   background-color: #c33;
 }
 .value {
-  background-color: #444;
+  background-color: #555;
 }
 .memory {
   background-color: green;
@@ -106,7 +104,7 @@ h3 {
   background-color: #f00;
 }
 .value:hover {
-  background-color: #777;
+  background-color: #999;
 }
 .memory:hover {
   background-color: #4a4;
