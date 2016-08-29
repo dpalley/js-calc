@@ -15,6 +15,7 @@ $( document ).ready(function() {
   var pendingAdd;
   var register;
   var currentVal;    // numeric value being displayed
+  var negNum;
   var memVal;
   var clickVal;      // value of current mouse click
   var op;            // 'operator' - values are: add sub mult div
@@ -39,6 +40,8 @@ $( document ).ready(function() {
     currentOp    = noOp;
 //    pendingOp    = "none";
     pendingAdd   = false;
+    subtraction  = false;
+    negNum       = false;
     accumulator  = 0;
     register     = 0;
     currentVal   = 0;
@@ -50,7 +53,7 @@ $( document ).ready(function() {
   
   function noOp()       {return currentVal;}
   function addTwo(a, b) {return (a+b);}
-  function subTwo(a, b) {return (a-b);}
+  function subTwo(a, b) { subtraction = false; console.log("sub"); return (a-b);}
   function divTwo(a, b) {return (a/b);}
   function mulTwo(a, b) {return (a*b);}
   
@@ -109,6 +112,11 @@ showValues();
   function isOperator() {
     if (number === "integer") currentVal = parseInt(integerVal);
     if (number === "float") currentVal = parseFloat(integerVal + "." + fractionVal);
+    if (subtraction) { currentVal = -currentVal; subtraction = false; }
+    if (negNum) {
+      currentVal = -(currentVal);
+      negNum = false;
+    }
     switch (clickVal) {       
       case "\u221a":                               // square root
         currentVal = Math.sqrt(currentVal);
@@ -136,19 +144,29 @@ console.log("test 2");
             updateDisplay(accumulator);
             break;
           default: 
-console.log("test 3");
             accumulator = currentVal;
             break;
         }
         currentOp = mulTwo;
         break;
-      case "-":     // invert the next number and treat it as addition
+      case "-":                     // for subtraction, invert the next number and treat it as addition
+        if (number === "zero") {    // entering a negative number
+console.log("test 3");
+          negNum = !negNum;
+          updateDisplay();
+        } 
+        else subtraction = true; // performing a subtraction operation
  
       case "+":
         pendingOp = currentOp;
         currentOp = addTwo;
-        if ((pendingAdd) || (pendingOp === mulTwo)) {                           // <-- not sure about this
+//        currentOp  = (subtraction) ? subTwo : addTwo;
+console.log("current op is  " + currentOp);
+        if ((pendingAdd) && (pendingOp === mulTwo)) {                           // <-- not sure about this
           accumulator = pendingOp(accumulator, currentVal);
+          updateDisplay(accumulator);
+        } else if (pendingOp === addTwo) {
+          accumulator = addTwo(accumulator, currentVal);
           updateDisplay(accumulator);
         } else {
           op = "add";
@@ -192,6 +210,10 @@ console.log("test 5");
        }    
   }
   
+  function flip(num) {
+    
+  }
+  
   // Update the calculator display. If the function receives a parameter, it will be a numeric value.
   // Integer values must have a '.' appended to the end. If no parameter is passed, the function
   // constructs the display from the global variables integerVal and fractionVal
@@ -202,7 +224,10 @@ console.log("test 5");
         $("#value").text(arguments[0]);
       }
     }
-    else $("#value").text(integerVal + "." + fractionVal);
+    else {
+      if (negNum) $("#value").text("-" + integerVal + "." + fractionVal);
+      else $("#value").text(integerVal + "." + fractionVal);
+    }
   }
   
   // Mouse down events.
@@ -239,6 +264,7 @@ console.log("test 5");
       case 88:
       case 120: clickVal = "\xd7"; isOperator(); break;
       case 43: clickVal = "+";    isOperator(); break;
+      case 45: clickVal = "-";    isOperator(); break;
       case 47: clickVal = "\xf7"; isOperator(); break;
       case 48: clickVal = "0"; isValue(); break;
       case 49: clickVal = "1"; isValue(); break;
