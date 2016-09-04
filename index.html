@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Armata" rel="stylesheet">
 <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/segment7" type="text/css"/>
+    <link href="./css/remodal-default-theme.css" rel="stylesheet" type="text/css">
+    <link href="./css/remodal.css" rel="stylesheet" type="text/css">
     <link href="./css/styles.css" rel="stylesheet" type="text/css">
     <title>JavaScript Calculator</title>
   </head>
@@ -20,42 +22,43 @@
       <h3>Sharp EL-230 Emulator</h3>
       <div id="display"><span id="value"></span></div>
       <div class="calc-row">
-        <div class="calc-btn blu-btn btn-shadow memory"><p><a href="#modal">?</a></p></div>
-        <div class="calc-btn gra-btn btn-shadow control"><p>C</p></div>
-        <div class="calc-btn gra-btn btn-shadow control"><p>CE</p></div>
-        <div class="calc-btn blu-btn btn-shadow operator times"><p>&Pi;</p></div>
-        <div class="calc-btn gra-btn btn-shadow operator"><p>&radic;<span style="text-decoration:overline;">&nbsp;&nbsp;</span></p></div>
+        <button class="calc-btn blu-btn btn-shadow control"><p>Off</p></button>
+        <button class="calc-btn gra-btn btn-shadow control"><p>C</p></button>
+        <button class="calc-btn gra-btn btn-shadow control"><p>CE</p></button>
+        <a href="#modal"><button class="calc-btn blu-btn btn-shadow memory"><p>?</p></button></a>
+        <button class="calc-btn blu-btn btn-shadow operator times"><p>&Pi;</p></button>
         </div>
       <div class="calc-row">
-        <div class="calc-btn gra-btn btn-shadow value"><p>7</p></div>
-        <div class="calc-btn gra-btn btn-shadow value"><p>8</p></div>
-        <div class="calc-btn gra-btn btn-shadow value"><p>9</p></div>
-        <div class="calc-btn blu-btn btn-shadow operator"><p>x <sup>y</p></div>
-        <div class="calc-btn gra-btn btn-shadow operator"><p>%</p></div>
+        <button class="calc-btn gra-btn btn-shadow value"><p>7</p></button>
+        <button class="calc-btn gra-btn btn-shadow value"><p>8</p></button>
+        <button class="calc-btn gra-btn btn-shadow value"><p>9</p></button>
+        <button class="calc-btn gra-btn btn-shadow operator"><p>&radic;<span style="text-decoration:overline;">&nbsp;&nbsp;</span></p></button>
+<!--        <button class="calc-btn blu-btn btn-shadow operator"><p>x <sup>y</sup></p></button>-->
+        <button class="calc-btn gra-btn btn-shadow operator"><p>%</p></button>
         </div>
       <div class="calc-row">
-        <div class="calc-btn gra-btn btn-shadow value"><p>4</p></div>
-        <div class="calc-btn gra-btn btn-shadow value"><p>5</p></div>
-        <div class="calc-btn gra-btn btn-shadow value"><p>6</p></div>
-        <div class="calc-btn blu-btn btn-shadow operator"><p><sup>1</sup>/x</p></div>
-        <div class="calc-btn red-btn btn-shadow operator"><p>+/-</p></div>
+        <button class="calc-btn gra-btn btn-shadow value"><p>4</p></button>
+        <button class="calc-btn gra-btn btn-shadow value"><p>5</p></button>
+        <button class="calc-btn gra-btn btn-shadow value"><p>6</p></button>
+        <button class="calc-btn blu-btn btn-shadow operator"><p><sup>1</sup>/x</p></button>
+        <button class="calc-btn red-btn btn-shadow operator"><p>+/-</p></button>
         </div>
       <div class="calc-row">
-        <div class="calc-btn gra-btn btn-shadow value"><p>1</p></div>
-        <div class="calc-btn gra-btn btn-shadow value"><p>2</p></div>
-        <div class="calc-btn gra-btn btn-shadow value"><p>3</p></div>
-        <div class="calc-btn gra-btn btn-shadow operator"><p>&times;</p></div>
-        <div class="calc-btn gra-btn btn-shadow operator"><p>&divide;</p></div>
+        <button class="calc-btn gra-btn btn-shadow value"><p>1</p></button>
+        <button class="calc-btn gra-btn btn-shadow value"><p>2</p></button>
+        <button class="calc-btn gra-btn btn-shadow value"><p>3</p></button>
+        <button class="calc-btn gra-btn btn-shadow operator"><p>&times;</p></button>
+        <button class="calc-btn gra-btn btn-shadow operator"><p>&divide;</p></button>
         </div>
       <div class="calc-row">
-        <div class="calc-btn gra-btn btn-shadow value"><p>0</p></div>
-        <div class="calc-btn gra-btn btn-shadow value"><p>.</p></div>
-        <div class="calc-btn gra-btn btn-shadow operator"><p>=</p></div>
-        <div class="calc-btn gra-btn btn-shadow operator"><p>+</p></div>
-        <div class="calc-btn gra-btn btn-shadow operator"><p>-</p></div>
+        <button class="calc-btn gra-btn btn-shadow value"><p>0</p></button>
+        <button class="calc-btn gra-btn btn-shadow value"><p>.</p></button>
+        <button class="calc-btn gra-btn btn-shadow operator"><p>=</p></button>
+        <button class="calc-btn gra-btn btn-shadow operator"><p>+</p></button>
+        <button class="calc-btn gra-btn btn-shadow operator"><p>-</p></button>
       </div>
     
-      <span class="foot"><p class="copy"><small>Copyright &copy; <a href="http://www.davidalley.net/" target="_blank">David Alley</a> <span id="year">2016</span></small></p></span>
+      <p class="foot copy"><small>&copy; <a href="http://www.davidalley.net/" target="_blank">David Alley</a> <span id="year">2016</span></small></p>
 
     </div>
     
@@ -63,15 +66,17 @@
     
     <div class="remodal" data-remodal-id="modal">
       <button data-remodal-action="close" class="remodal-close"></button>
-      <p>Digits 0 - 9<br />Enter: = <br /></p>
+      <p>
+        The state maching logic is still being debugged.
+      </p>
+      <p>Keyboard input has been enabled for the calculator. The following keys have been mapped:<br />
+        Decimal point (.) and digits 0 - 9<br />The basic mathematical functions (add subtract multiply divide): + - * /<br />Uppercase (X) and lowercase (x) are also mapped to the multiply operation<br />The Enter key and the "=" keys: = <br /></p>
       <p>Difference between entering a negative number and performing a subtraction.</p>
     </div>
-    
-    
-    
+        
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>    
     <script>window.jQuery || document.write('<script src="./js/jquery-1.12.4.min.js">\x3C/script>')</script>
-    <script src="./js/jquery.copyRight.js"></script>
+    <script src="./js/jquery.copyRight.min.js"></script>
     <script src="./js/remodal.js"></script> 	
     <script src="./js/script.js"></script> 	
   </body>

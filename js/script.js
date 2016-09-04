@@ -19,7 +19,10 @@ $( document ).ready(function() {
   var memVal;
   var clickVal;      // value of current mouse click
   var op;            // 'operator' - values are: add sub mult div
- 
+  
+  var modalWindow = $('[data-remodal-id=modal]').remodal();
+  $('#year').copyRight();
+  
   // Audible mouse click
   var click = new Audio("./assets/click.mp3");
   click.volume = 0.2;
@@ -38,7 +41,7 @@ $( document ).ready(function() {
   function resetValues() {
     clearEntry();
     currentOp    = noOp;
-//    pendingOp    = "none";
+    pendingOp    = noOp;
     pendingAdd   = false;
     subtraction  = false;
     negNum       = false;
@@ -96,6 +99,7 @@ showValues();
           
         }
         else {
+          fractionVal = "";
           number = "integer";
           integerVal = clickVal;
         }
@@ -113,7 +117,7 @@ showValues();
     if (number === "integer") currentVal = parseInt(integerVal);
     if (number === "float") currentVal = parseFloat(integerVal + "." + fractionVal);
     if (subtraction) { currentVal = -currentVal; subtraction = false; }
-    if (negNum) {
+    if (negNum && (number !== "zero")) {
       currentVal = -(currentVal);
       negNum = false;
     }
@@ -153,7 +157,10 @@ console.log("test 2");
         if (number === "zero") {    // entering a negative number
 console.log("test 3");
           negNum = !negNum;
+console.log("negNum is  " + negNum);
+
           updateDisplay();
+          break;
         } 
         else subtraction = true; // performing a subtraction operation
  
@@ -162,14 +169,11 @@ console.log("test 3");
         currentOp = addTwo;
 //        currentOp  = (subtraction) ? subTwo : addTwo;
 console.log("current op is  " + currentOp);
-        if ((pendingAdd) && (pendingOp === mulTwo)) {                           // <-- not sure about this
+        if (pendingOp !== noOp) { 
           accumulator = pendingOp(accumulator, currentVal);
           updateDisplay(accumulator);
-        } else if (pendingOp === addTwo) {
-          accumulator = addTwo(accumulator, currentVal);
-          updateDisplay(accumulator);
         } else {
-          op = "add";
+//          op = "add";
           register = accumulator;
           accumulator = currentVal;
         }
@@ -185,6 +189,7 @@ console.log("test 5");
             }
 
         currentOp = noOp;
+        pendingOp = noOp;
         register = 0;
         updateDisplay(currentVal);
         console.log(currentVal); 
@@ -265,6 +270,7 @@ console.log("test 5");
       case 120: clickVal = "\xd7"; isOperator(); break;
       case 43: clickVal = "+";    isOperator(); break;
       case 45: clickVal = "-";    isOperator(); break;
+      case 46: clickVal = ".";    isValue(); break;
       case 47: clickVal = "\xf7"; isOperator(); break;
       case 48: clickVal = "0"; isValue(); break;
       case 49: clickVal = "1"; isValue(); break;
@@ -276,7 +282,10 @@ console.log("test 5");
       case 55: clickVal = "7"; isValue(); break;
       case 56: clickVal = "8"; isValue(); break;
       case 57: clickVal = "9"; isValue(); break;
+      case 63: modalWindow.open(); break;
       default:  break; // random keypress - don't care
     }
   });    
 });
+
+
