@@ -111,10 +111,12 @@ a:visited, a:active, a:hover, a:focus { text-decoration: none; }
   font-family: "Orbitron", "Arial", sans-serif;
 }
 .foot a:hover { font-style: italic; }
+.go-left { float: left; margin: auto 15px;}
+.all { clear: both; }
 
 /*.copy { font-size: 1.4em; font-weight: 800; }*/
 
-@media screen and (max-width: 350px) {
+@media screen and (max-width: 360px) {
   .calculator { width: 250px; height: 380px; border: 8px solid #888; }
   h1 {  font-size: .9em; letter-spacing: 0.03em; }
   .calc-btn {
@@ -134,6 +136,7 @@ a:visited, a:active, a:hover, a:focus { text-decoration: none; }
     font-size: .9em;
   }
   .foot { font-size: 1.1em; }
+  .go-left { margin: auto 5px; font-size: .9em;}
 }
 
 @media screen and (max-width: 300px) {
@@ -153,8 +156,9 @@ a:visited, a:active, a:hover, a:focus { text-decoration: none; }
     border: 2px solid black;
     margin: 10px auto; 
     padding: 15px;
-    font-size: .8em;
+    font-size: .75em;
   }
   .foot { font-size: 1em; }
+  .go-left { margin: auto 2px; font-size: .7em;}
 }
 

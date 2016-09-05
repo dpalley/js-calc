@@ -15,10 +15,13 @@ $( document ).ready(function() {
   var pendingAdd;
   var register;
   var currentVal;    // numeric value being displayed
+  var subtraction;
+  var division;
   var negNum;
   var memVal;
   var clickVal;      // value of current mouse click
   var op;            // 'operator' - values are: add sub mult div
+  var MAX_LENGTH = 11;
   
   var modalWindow = $('[data-remodal-id=modal]').remodal();
   $('#year').copyRight();
@@ -36,7 +39,7 @@ $( document ).ready(function() {
     number       = "zero";
     integerVal   = "0";
     fractionVal  = ""; 
-    updateDisplay(currentVal);
+    updateDisplay();
   }
   function resetValues() {
     clearEntry();
@@ -44,6 +47,7 @@ $( document ).ready(function() {
     pendingOp    = noOp;
     pendingAdd   = false;
     subtraction  = false;
+    division     = false;
     negNum       = false;
     accumulator  = 0;
     register     = 0;
@@ -56,9 +60,13 @@ $( document ).ready(function() {
   
   function noOp()       {return currentVal;}
   function addTwo(a, b) {return (a+b);}
-  function subTwo(a, b) { subtraction = false; console.log("sub"); return (a-b);}
-  function divTwo(a, b) {return (a/b);}
-  function mulTwo(a, b) {return (a*b);}
+  // function subTwo(a, b) { subtraction = false; console.log("sub"); return (a-b);}
+//  function divTwo(a, b) {return (a/b);}
+  function mulTwo(a, b) {
+    if (division && b == 0) displayError();
+    division = false;
+    return (a*b);
+  }
   
   
   // Contol keys - On, Off, Clear
@@ -117,29 +125,50 @@ showValues();
     if (number === "integer") currentVal = parseInt(integerVal);
     if (number === "float") currentVal = parseFloat(integerVal + "." + fractionVal);
     if (subtraction) { currentVal = -currentVal; subtraction = false; }
+    if (division)    { currentVal = (1/currentVal); division = false; }
     if (negNum && (number !== "zero")) {
       currentVal = -(currentVal);
       negNum = false;
-    }
-    switch (clickVal) {       
-      case "\u221a":                               // square root
-        currentVal = Math.sqrt(currentVal);
+    }   
+    switch (clickVal) {
+      case "1/x":
+        currentVal = (1/currentVal);
         updateDisplay(currentVal);
+        break;
+      case "+/-":
+        currentVal = -currentVal;
+        updateDisplay(currentVal);
+        break;
+      case "Π":
+        currentVal = 3.14159265358979323;
+        updateDisplay(currentVal);
+        break;
+      case "\u221a":                               // square root
+console.log("negNum is " + negNum);
+console.log("currentVal is " + currentVal);
+        if (currentVal >= 0) {
+          currentVal = Math.sqrt(currentVal);
+          updateDisplay(currentVal);
+        } else {
+console.log("Square root error " + currentVal);
+          displayError();
+        }
         break;
       case "%":
         currentVal = currentVal/100;
         updateDisplay(currentVal);
         break;
       case "\xf7":      // invert the next number and treat it as a multiplication
+        division = true;
 
         
       case "\xd7":                             // multiply
         switch(currentOp) {
           case addTwo:
 console.log("test 1");
-            pendingAdd = true;
             register = accumulator;
             accumulator = currentVal;
+            pendingOp = currentOp;
             break;
           case mulTwo:
 console.log("test 2");
@@ -153,36 +182,49 @@ console.log("test 2");
         }
         currentOp = mulTwo;
         break;
+
+      
+      
       case "-":                     // for subtraction, invert the next number and treat it as addition
         if (number === "zero") {    // entering a negative number
-console.log("test 3");
           negNum = !negNum;
-console.log("negNum is  " + negNum);
+
+          console.log("negNum is  " + negNum);
 
           updateDisplay();
           break;
         } 
         else subtraction = true; // performing a subtraction operation
  
-      case "+":
-        pendingOp = currentOp;
-        currentOp = addTwo;
-//        currentOp  = (subtraction) ? subTwo : addTwo;
+
+      
+      case "+":        
 console.log("current op is  " + currentOp);
+console.log("pending op is  " + pendingOp);
+console.log("current val is  " + currentVal);
+console.log("accumulator is  " + accumulator);
+console.log("register is  " + register);
+        if (currentOp !== noOp) { 
+          accumulator = currentOp(accumulator, currentVal);
+        }
         if (pendingOp !== noOp) { 
-          accumulator = pendingOp(accumulator, currentVal);
-          updateDisplay(accumulator);
-        } else {
-//          op = "add";
-          register = accumulator;
+          accumulator = pendingOp(register, accumulator);
+          pendingOp = noOp;
+        }
+        if (currentOp === noOp) {
           accumulator = currentVal;
         }
+        currentOp = addTwo;
+        updateDisplay(accumulator);
         break;
       case "=":
-  console.log(accumulator + " " + currentVal);
+console.log("current op is  " + currentOp);
+console.log("pending op is  " + pendingOp);
+console.log("current val is  " + currentVal);
+console.log("accumulator is  " + accumulator);
+console.log("register is  " + register);
         currentVal = currentOp(accumulator, currentVal);
-         if(pendingAdd && (currentOp === mulTwo)) {
-console.log("test 5");           
+         if((pendingOp === addTwo) && (currentOp === mulTwo)) {
               currentVal = addTwo(register,currentVal);
               pendingAdd = false;
               register = 0;
@@ -195,7 +237,7 @@ console.log("test 5");
         console.log(currentVal); 
         break;
       default:
-        console.log("invalid operator");
+        console.log("invalid operator - " + clickVal);
         break;           
       }
     number = "zero";  // control the input of the next number
@@ -219,18 +261,26 @@ console.log("test 5");
     
   }
   
+  function displayError() {$("#value").text("Error");}
+  
   // Update the calculator display. If the function receives a parameter, it will be a numeric value.
   // Integer values must have a '.' appended to the end. If no parameter is passed, the function
   // constructs the display from the global variables integerVal and fractionVal
-  function updateDisplay() {
+  function updateDisplay(value) {
     if (arguments.length === 1) {
-      if (Number.isInteger(arguments[0])) $("#value").text(arguments[0].toString() + ".");
-      else {                                 // display floating point - need to format output
-        $("#value").text(arguments[0]);
+      if (Number.isInteger(value)) $("#value").text(value.toString() + ".");
+      else {       // display floating point - need to format output             <-----------
+console.log("value is  " + value + ", it is a " + typeof(value));
+        $("#value").text(parseFloat(value.toPrecision(MAX_LENGTH)));
       }
     }
     else {
-      if (negNum) $("#value").text("-" + integerVal + "." + fractionVal);
+      if ((integerVal.length + fractionVal.length) > MAX_LENGTH) {
+        displayError();
+        integerVal = "";
+        fractionVal = "";
+      }
+      else if (negNum) $("#value").text("-" + integerVal + "." + fractionVal);
       else $("#value").text(integerVal + "." + fractionVal);
     }
   }
@@ -283,6 +333,8 @@ console.log("test 5");
       case 56: clickVal = "8"; isValue(); break;
       case 57: clickVal = "9"; isValue(); break;
       case 63: modalWindow.open(); break;
+      case 80: case 112: clickVal = "Π"; isOperator(); break;
+      case 83: case 115: clickVal = "\u221a"; isOperator(); break;
       default:  break; // random keypress - don't care
     }
   });    
