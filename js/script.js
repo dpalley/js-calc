@@ -16,7 +16,6 @@ $( document ).ready(function() {
   var register;
   var currentVal;    // numeric value being displayed
   var subtraction;
-  var division;
   var negNum;
   var memVal;
   var clickVal;      // value of current mouse click
@@ -32,22 +31,22 @@ $( document ).ready(function() {
 
   // Function declarations---------------------------
   function showValues() {
-    console.log("clickVal is " + clickVal+ ", accumulator is " + accumulator + ", number is " + number + ", integerVal is " + integerVal + ", fractionVal is " + fractionVal);
+    console.log("number is " + number + ", clickVal is " + clickVal+ ", accumulator is " + accumulator + ", number is " + number + ", integerVal is " + integerVal + ", fractionVal is " + fractionVal);
   }
   
-  function clearEntry() {
+  function clearEntry(clearDisplay) {
     number       = "zero";
     integerVal   = "0";
     fractionVal  = ""; 
-    updateDisplay();
+    currentVal   = 0;
+    if(clearDisplay) updateDisplay();
   }
   function resetValues() {
-    clearEntry();
+    clearEntry(true);
     currentOp    = noOp;
     pendingOp    = noOp;
     pendingAdd   = false;
     subtraction  = false;
-    division     = false;
     negNum       = false;
     accumulator  = 0;
     register     = 0;
@@ -61,18 +60,17 @@ $( document ).ready(function() {
   function noOp()       {return currentVal;}
   function addTwo(a, b) {return (a+b);}
   // function subTwo(a, b) { subtraction = false; console.log("sub"); return (a-b);}
-//  function divTwo(a, b) {return (a/b);}
-  function mulTwo(a, b) {
-    if (division && b == 0) displayError();
-    division = false;
-    return (a*b);
+  function divTwo(a, b) {
+    if (b == 0) displayError();
+    else return (a/b);
   }
+  function mulTwo(a, b) { return (a*b); }
   
   
   // Contol keys - On, Off, Clear
   function isControl() {
     switch (clickVal) {
-    case "CE": clearEntry(); break;
+    case "CE": clearEntry(true); break;
     case "C": resetValues(); console.log("reset"); break;
     case "Off":
       $(".calculator").fadeOut(300);
@@ -84,11 +82,11 @@ $( document ).ready(function() {
   
   // Numeric keys, including the decimal point
   function isValue() {
+ showValues();
     switch (number) {
       case "float":
         if (clickVal === ".") console.log("can't enter another decimal point");
         else fractionVal += clickVal;
-showValues();
         updateDisplay();
         break;
       case "integer":
@@ -100,11 +98,10 @@ showValues();
 
         break;
       case "zero":
-//        integerVal = "0"; fractionVal = "";        
-        if (clickVal === ".") number = "float";
-        else if (clickVal === "0") {
-          console.log("entering 0 for a 0 value, dummy");
-          
+        if (clickVal === ".") {
+          number = "float";
+          integerVal = '0';
+          updateDisplay();
         }
         else {
           fractionVal = "";
@@ -117,7 +114,6 @@ showValues();
         console.log("invalid number status");
         break;
       }
-// showValues();
     }
   
   // Operator keys - multiply, divide, add, subtract, percentage, square root, equals sign
@@ -125,7 +121,6 @@ showValues();
     if (number === "integer") currentVal = parseInt(integerVal);
     if (number === "float") currentVal = parseFloat(integerVal + "." + fractionVal);
     if (subtraction) { currentVal = -currentVal; subtraction = false; }
-    if (division)    { currentVal = (1/currentVal); division = false; }
     if (negNum && (number !== "zero")) {
       currentVal = -(currentVal);
       negNum = false;
@@ -158,20 +153,16 @@ console.log("Square root error " + currentVal);
         currentVal = currentVal/100;
         updateDisplay(currentVal);
         break;
-      case "\xf7":      // invert the next number and treat it as a multiplication
-        division = true;
-
-        
-      case "\xd7":                             // multiply
+          
+      case "\xf7":                         // division        
         switch(currentOp) {
           case addTwo:
-console.log("test 1");
             register = accumulator;
             accumulator = currentVal;
             pendingOp = currentOp;
             break;
+          case divTwo:
           case mulTwo:
-console.log("test 2");
             accumulator = currentOp(accumulator, currentVal);
  
             updateDisplay(accumulator);
@@ -180,10 +171,27 @@ console.log("test 2");
             accumulator = currentVal;
             break;
         }
+        currentOp = divTwo;
+        break;        
+        
+      case "\xd7":                             // multiply
+        switch(currentOp) {
+          case addTwo:
+            register = accumulator;
+            accumulator = currentVal;
+            pendingOp = currentOp;
+            break;
+          case divTwo:
+          case mulTwo:
+            accumulator = currentOp(accumulator, currentVal); 
+            updateDisplay(accumulator);
+            break;
+          default: 
+            accumulator = currentVal;
+            break;
+        }
         currentOp = mulTwo;
         break;
-
-      
       
       case "-":                     // for subtraction, invert the next number and treat it as addition
         if (number === "zero") {    // entering a negative number
@@ -195,15 +203,9 @@ console.log("test 2");
           break;
         } 
         else subtraction = true; // performing a subtraction operation
- 
-
+      // note - lack of 'break' statement is intentional 
       
       case "+":        
-console.log("current op is  " + currentOp);
-console.log("pending op is  " + pendingOp);
-console.log("current val is  " + currentVal);
-console.log("accumulator is  " + accumulator);
-console.log("register is  " + register);
         if (currentOp !== noOp) { 
           accumulator = currentOp(accumulator, currentVal);
         }
@@ -216,13 +218,10 @@ console.log("register is  " + register);
         }
         currentOp = addTwo;
         updateDisplay(accumulator);
+        clearEntry(false);
         break;
+        
       case "=":
-console.log("current op is  " + currentOp);
-console.log("pending op is  " + pendingOp);
-console.log("current val is  " + currentVal);
-console.log("accumulator is  " + accumulator);
-console.log("register is  " + register);
         currentVal = currentOp(accumulator, currentVal);
          if((pendingOp === addTwo) && (currentOp === mulTwo)) {
               currentVal = addTwo(register,currentVal);
@@ -256,10 +255,7 @@ console.log("register is  " + register);
         break; 
        }    
   }
-  
-  function flip(num) {
-    
-  }
+
   
   function displayError() {$("#value").text("Error");}
   
@@ -267,6 +263,7 @@ console.log("register is  " + register);
   // Integer values must have a '.' appended to the end. If no parameter is passed, the function
   // constructs the display from the global variables integerVal and fractionVal
   function updateDisplay(value) {
+    if (integerVal === '00') integerVal = '0';
     if (arguments.length === 1) {
       if (Number.isInteger(value)) $("#value").text(value.toString() + ".");
       else {       // display floating point - need to format output             <-----------
