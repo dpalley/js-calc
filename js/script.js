@@ -101,6 +101,7 @@ $( document ).ready(function() {
         if (clickVal === ".") {
           number = "float";
           integerVal = '0';
+          fractionVal = '';
           updateDisplay();
         }
         else {
@@ -234,6 +235,7 @@ console.log("Square root error " + currentVal);
         register = 0;
         updateDisplay(currentVal);
         console.log(currentVal); 
+        number = "zero";  // control the input of the next number
         break;
       default:
         console.log("invalid operator - " + clickVal);
